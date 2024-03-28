@@ -48,7 +48,8 @@ Locally the streamlit application will run on localhost on the following port:
 ```
 
 ### Run in docker using Colima
-This assumes you have colima installed on Mac - see the following guide to get use Colima: https://smallsharpsoftwaretools.com/tutorials/use-colima-to-run-docker-containers-on-macos/
+
+This assumes you have colima installed on Mac - see the following guide to get use Colima: [Use Colima to Run Docker Containers](https://smallsharpsoftwaretools.com/tutorials/use-colima-to-run-docker-containers-on-macos/)
 
 #### Start Colima
 
@@ -100,7 +101,7 @@ CONTAINER ID   IMAGE                   COMMAND                  CREATED         
 
 #### Browse the application
 
-Open a web browser and navigate to 
+Open a web browser and navigate to
 
 ```bash
 localhost:1234
@@ -113,6 +114,7 @@ The streamlit application should be shown
 The docker image is published to dockerhub as [streamlit-in-aws](https://hub.docker.com/repository/docker/sgibbard/streamlit-in-aws/general)
 
 ## Additional Information
+
 The following links have been useful in helping progress this repository:
 
 [Transform Python Apps to Portable Containers](https://medium.com/ai-in-plain-english/docker-essentials-transforming-python-apps-into-portable-containers-cf298d3779a6)
