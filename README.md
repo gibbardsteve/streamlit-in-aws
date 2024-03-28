@@ -107,3 +107,12 @@ localhost:1234
 ```
 
 The streamlit application should be shown
+
+#### Docker image
+
+The docker image is published to dockerhub as [streamlit-in-aws](https://hub.docker.com/repository/docker/sgibbard/streamlit-in-aws/general)
+
+## Additional Information
+The following links have been useful in helping progress this repository:
+
+[Transform Python Apps to Portable Containers](https://medium.com/ai-in-plain-english/docker-essentials-transforming-python-apps-into-portable-containers-cf298d3779a6)
