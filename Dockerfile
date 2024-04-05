@@ -4,6 +4,9 @@ FROM python:3.10-slim
 # run a pip install for poetry 1.5.0
 RUN pip install poetry==1.5.0
 
+# Expose the port the app runs on
+EXPOSE 8501
+
 # Set the working directory
 WORKDIR /app
 
