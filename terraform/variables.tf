@@ -45,3 +45,15 @@ variable "log_retention_days" {
   type        = number
   default     = 90
 }
+
+variable "lb_delete_protection" {
+  description = "Enable deletion protection for the load balancer"
+  type        = bool
+  default     = false
+}
+
+variable "service_subdomain" {
+  description = "Service subdomain"
+  type        = string
+  default     = "streamlit"
+}

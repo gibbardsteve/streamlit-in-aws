@@ -24,7 +24,7 @@ resource "aws_lb" "test_lb_tf" {
   security_groups    = [aws_security_group.test_lb_sg_tf.id]
   subnets            = data.aws_subnets.default.ids
 
-  enable_deletion_protection = true
+  enable_deletion_protection = var.lb_delete_protection
 
 }
 
