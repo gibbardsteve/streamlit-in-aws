@@ -29,3 +29,8 @@ output "main_vpc_id" {
 output "security_group_id" {
   value = aws_security_group.allow_tf_streamlit.id
 }
+
+output "public_ip" {
+  value = data.aws_network_interface.interface_tags.association[0].public_ip
+}
+
