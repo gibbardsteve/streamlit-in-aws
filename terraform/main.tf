@@ -88,6 +88,7 @@ resource "aws_security_group" "allow_tf_streamlit" {
     cidr_blocks = ["0.0.0.0/0"]
   }
 }
+
 resource "aws_ecs_service" "ecs-service-streamlit-app" {
   name             = "ecs-service-streamlit-app"
   cluster          = aws_ecs_cluster.ecs_tf_cluster.id
@@ -117,20 +118,3 @@ resource "aws_ecs_service" "ecs-service-streamlit-app" {
 
 }
 
-data "aws_route53_zone" "route53_domain" {
-  name = var.domain_name
-}
-
-resource "aws_route53_record" "route53_record" {
-  zone_id = data.aws_route53_zone.route53_domain.zone_id
-  name    = "${var.service_subdomain}.${var.domain_name}"
-  type    = "A"
-
-  depends_on = [aws_alb_listener.app_http]
-  alias {
-    name                   = aws_lb.test_lb_tf.dns_name
-    zone_id                = aws_lb.test_lb_tf.zone_id
-    evaluate_target_health = true
-  }
-
-}
