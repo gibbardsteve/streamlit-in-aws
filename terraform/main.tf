@@ -123,7 +123,7 @@ data "aws_route53_zone" "route53_domain" {
 
 resource "aws_route53_record" "route53_record" {
   zone_id = data.aws_route53_zone.route53_domain.zone_id
-  name    = "streamlit.${var.domain_name}"
+  name    = "${var.service_subdomain}.${var.domain_name}"
   type    = "A"
 
   depends_on = [aws_alb_listener.app_http]
