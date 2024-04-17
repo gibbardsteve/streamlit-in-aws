@@ -57,3 +57,27 @@ variable "service_subdomain" {
   type        = string
   default     = "streamlit"
 }
+
+variable "app_name" {
+  description = "Application name"
+  type        = string
+  default     = "streamlit"
+}
+
+variable "service_cpu" {
+  description = "Service CPU"
+  type        = string
+  default     = "1024"
+}
+
+variable "service_memory" {
+  description = "Service memory"
+  type        = string
+  default     = "3072"
+}
+
+variable "task_count" {
+  description = "Number of instances of the service to run"
+  type        = number
+  default     = 1
+}

@@ -13,10 +13,10 @@ data "aws_subnets" "default" {
 
 
 data "aws_network_interface" "interface_tags" {
-  depends_on = [aws_ecs_service.ecs-service-streamlit-app]
+  depends_on = [aws_ecs_service.application]
   filter {
     name   = "tag:aws:ecs:serviceName"
-    values = ["ecs-service-streamlit-app"]
+    values = ["${var.app_name}-service"]
   }
 }
 

@@ -1,10 +1,10 @@
-resource "aws_ecs_cluster" "ecs_tf_cluster" {
-  name = "ecs-tf-cluster"
+resource "aws_ecs_cluster" "service_cluster" {
+  name = "service-cluster"
 }
 
 
-resource "aws_ecs_cluster_capacity_providers" "ecs_tf_cap_prov" {
-  cluster_name = aws_ecs_cluster.ecs_tf_cluster.name
+resource "aws_ecs_cluster_capacity_providers" "service_providers" {
+  cluster_name = aws_ecs_cluster.service_cluster.name
 
   capacity_providers = ["FARGATE", "FARGATE_SPOT"]
 
@@ -12,22 +12,22 @@ resource "aws_ecs_cluster_capacity_providers" "ecs_tf_cap_prov" {
 }
 
 # Required for task execution to ensure logs are created in CloudWatch
-resource "aws_cloudwatch_log_group" "ecs-tf-streamlit-app-task-def" {
-  name              = "/ecs/ecs-tf-streamlit-app-task-def"
+resource "aws_cloudwatch_log_group" "ecs_service_logs" {
+  name              = "/ecs/ecs-service-${var.app_name}-application"
   retention_in_days = var.log_retention_days
 }
 
-resource "aws_ecs_task_definition" "ecs_tf_task_def" {
-  family = "ecs-tf-streamlit-app-task-def"
+resource "aws_ecs_task_definition" "ecs_service_definition" {
+  family = "ecs-service-${var.app_name}-application"
   container_definitions = jsonencode([
     {
-      name      = "tf-streamlit-app"
+      name      = "${var.app_name}-task-application"
       image     = "${var.aws_account_id}.dkr.ecr.eu-west-2.amazonaws.com/${var.container_image}:${var.container_tag}"
       cpu       = 0,
       essential = true
       portMappings = [
         {
-          name          = "streamlit-${var.container_port}-tcp",
+          name          = "${var.app_name}-${var.container_port}-tcp",
           containerPort = var.container_port,
           hostPort      = var.container_port,
           protocol      = "tcp",
@@ -38,7 +38,7 @@ resource "aws_ecs_task_definition" "ecs_tf_task_def" {
         logDriver = "awslogs",
         options = {
           "awslogs-create-group"  = "true",
-          "awslogs-group"         = "/ecs/ecs-tf-streamlit-app-task-def",
+          "awslogs-group"         = "/ecs/ecs-service-${var.app_name}-application",
           "awslogs-region"        = "eu-west-2",
           "awslogs-stream-prefix" = "ecs"
         }
@@ -48,8 +48,8 @@ resource "aws_ecs_task_definition" "ecs_tf_task_def" {
   execution_role_arn       = "arn:aws:iam::${var.aws_account_id}:role/ecsTaskExecutionRole"
   requires_compatibilities = ["FARGATE"]
   network_mode             = "awsvpc"
-  cpu                      = "1024"
-  memory                   = "3072"
+  cpu                      = var.service_cpu
+  memory                   = var.service_memory
   runtime_platform {
     operating_system_family = "LINUX"
     cpu_architecture        = "X86_64"
@@ -57,11 +57,11 @@ resource "aws_ecs_task_definition" "ecs_tf_task_def" {
 
 }
 
-resource "aws_ecs_service" "ecs-service-streamlit-app" {
-  name             = "ecs-service-streamlit-app"
-  cluster          = aws_ecs_cluster.ecs_tf_cluster.id
-  task_definition  = aws_ecs_task_definition.ecs_tf_task_def.arn
-  desired_count    = 1
+resource "aws_ecs_service" "application" {
+  name             = "${var.app_name}-service"
+  cluster          = aws_ecs_cluster.service_cluster.id
+  task_definition  = aws_ecs_task_definition.ecs_service_definition.arn
+  desired_count    = var.task_count
   launch_type      = "FARGATE"
   platform_version = "LATEST"
 
@@ -70,7 +70,7 @@ resource "aws_ecs_service" "ecs-service-streamlit-app" {
 
   load_balancer {
     target_group_arn = aws_lb_target_group.fargate_tg.arn
-    container_name   = "tf-streamlit-app"
+    container_name   = "${var.app_name}-task-application"
     container_port   = var.container_port
   }
 
