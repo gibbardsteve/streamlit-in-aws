@@ -101,7 +101,7 @@ resource "aws_ecs_service" "ecs-service-streamlit-app" {
   wait_for_steady_state   = true # Terraform will wait for the service to reach a steady state before continuing
 
   load_balancer {
-    target_group_arn = aws_lb_target_group.ip_example.arn
+    target_group_arn = aws_lb_target_group.fargate_tg.arn
     container_name   = "tf-streamlit-app"
     container_port   = var.container_port
   }

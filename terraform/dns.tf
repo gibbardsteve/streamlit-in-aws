@@ -11,8 +11,8 @@ resource "aws_route53_record" "route53_record" {
 
   depends_on = [aws_alb_listener.app_http]
   alias {
-    name                   = aws_lb.test_lb_tf.dns_name
-    zone_id                = aws_lb.test_lb_tf.zone_id
+    name                   = aws_lb.service_lb.dns_name
+    zone_id                = aws_lb.service_lb.zone_id
     evaluate_target_health = true
   }
 
