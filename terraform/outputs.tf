@@ -27,7 +27,7 @@ output "main_vpc_id" {
 }
 
 output "security_group_id" {
-  value = aws_security_group.allow_tf_streamlit.id
+  value = aws_security_group.allow_rules_service.id
 }
 
 output "public_ip" {

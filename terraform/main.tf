@@ -1,16 +1,3 @@
-terraform {
-  required_providers {
-    aws = {
-      source  = "hashicorp/aws"
-      version = "~> 5.0"
-    }
-  }
-}
-
-provider "aws" {
-  region = "eu-west-2"
-}
-
 resource "aws_ecs_cluster" "ecs_tf_cluster" {
   name = "ecs-tf-cluster"
 }
@@ -70,25 +57,6 @@ resource "aws_ecs_task_definition" "ecs_tf_task_def" {
 
 }
 
-resource "aws_security_group" "allow_tf_streamlit" {
-  name        = "allow_tf_streamlit"
-  description = "Allow inbound traffic on port ${var.container_port} from ${var.from_port}"
-
-  ingress {
-    from_port   = var.from_port
-    to_port     = var.container_port
-    protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
-
-  egress {
-    from_port   = 0
-    to_port     = 0
-    protocol    = "-1"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
-}
-
 resource "aws_ecs_service" "ecs-service-streamlit-app" {
   name             = "ecs-service-streamlit-app"
   cluster          = aws_ecs_cluster.ecs_tf_cluster.id
@@ -112,7 +80,7 @@ resource "aws_ecs_service" "ecs-service-streamlit-app" {
   depends_on = [aws_alb_listener.app_http]
   network_configuration {
     subnets          = data.aws_subnets.default.ids
-    security_groups  = [aws_security_group.allow_tf_streamlit.id]
+    security_groups  = [aws_security_group.allow_rules_service.id]
     assign_public_ip = true
   }
 
