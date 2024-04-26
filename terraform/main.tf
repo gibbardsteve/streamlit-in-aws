@@ -1,7 +1,16 @@
+terraform {
+  backend "s3" {
+    bucket         = "stevegibbard-tf-state"
+    key            = "streamlit-app/terraform.tfstate"
+    region         = "eu-west-2"
+    dynamodb_table = "terraform-state-lock"
+    encrypt        = true
+  }
+
+}
 resource "aws_ecs_cluster" "service_cluster" {
   name = "service-cluster"
 }
-
 
 resource "aws_ecs_cluster_capacity_providers" "service_providers" {
   cluster_name = aws_ecs_cluster.service_cluster.name
@@ -79,8 +88,11 @@ resource "aws_ecs_service" "application" {
   # is complete first
   depends_on = [aws_alb_listener.app_http]
   network_configuration {
-    subnets          = data.aws_subnets.default.ids
-    security_groups  = [aws_security_group.allow_rules_service.id]
+    subnets         = data.aws_subnets.default.ids
+    security_groups = [aws_security_group.allow_rules_service.id]
+
+    # TODO: The container fails to launch unless a public IP is assigned
+    # For a private ip, you would need to use a NAT Gateway?
     assign_public_ip = true
   }
 

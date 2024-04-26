@@ -38,3 +38,6 @@ output "service_domain" {
   value = "${var.service_subdomain}.${var.domain_name}"
 }
 
+output "service_lb_dns_name" {
+  value = aws_lb.service_lb.dns_name
+}
